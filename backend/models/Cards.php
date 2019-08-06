@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\elasticsearch\ActiveRecord;
 
 /**
  * This is the model class for table "cards".
@@ -15,8 +16,17 @@ use Yii;
  * @property CardsCount[] $cardsCounts
  * @property CardsCount[] $cardsCounts0
  */
-class Cards extends \yii\db\ActiveRecord
+class Cards extends ActiveRecord
 {
+    /**
+     * @return array the list of attributes for this record
+     */
+    public function attributes()
+    {
+        // path mapping for '_id' is setup to field 'id'
+        return ['id', 'title', 'description', 'image_id'];
+    }
+
     /**
      * {@inheritdoc}
      */

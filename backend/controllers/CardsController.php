@@ -2,12 +2,16 @@
 
 namespace backend\controllers;
 
+use app\models\Images;
+use app\models\UploadImage;
 use Yii;
 use app\models\Cards;
 use yii\data\ActiveDataProvider;
+use yii\db\Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * CardsController implements the CRUD actions for Cards model.
@@ -64,15 +68,41 @@ class CardsController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Cards();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
+        $card = $this->createCard();
         return $this->render('create', [
-            'model' => $model,
+            'card'  => $card,
         ]);
+    }
+
+    /**
+     * @param null $imageId
+     *
+     * @return \app\models\Cards
+     */
+    private function createCard($imageId = null): Cards
+    {
+        $card  = new Cards();
+        $post  = Yii::$app->request->post();
+        if($this->uploadImage()) $post['image_id'] = $imageId;
+
+        if ($card->load($post) && $card->save())
+            return $this->redirect(['view', 'id' => $card->id]);
+
+        return $card;
+    }
+
+    /**
+     * @return int|null
+     */
+    private function uploadImage(): ?int
+    {
+        $uploadImage = new UploadImage();
+
+        if (Yii::$app->request->isPost){
+            $uploadImage->imageFile = UploadedFile::getInstance($uploadImage, 'imageFile');
+            return $uploadImage->upload();
+        }
+        return null;
     }
 
     /**
