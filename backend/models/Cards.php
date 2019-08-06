@@ -17,7 +17,7 @@ use yii\elasticsearch\ActiveRecord;
  * @property CardsCount[] $cardsCounts
  * @property CardsCount[] $cardsCounts0
  */
-class Cards extends \yii\db\ActiveRecord
+class Cards extends ActiveRecord
 {
     /**
      * @return array the list of attributes for this record

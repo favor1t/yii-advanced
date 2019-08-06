@@ -11,7 +11,7 @@ class m190806_174655_create_cards_count_migration extends Migration
     public function up()
     {
         $this->createTable('{{%cards_count}}', [
-            'card_id'       => $this->integer()->notNull(),
+            'card_id'       => $this->primaryKey(),
             'count'         => $this->integer(),
         ]);
         $this->addForeignKey(
