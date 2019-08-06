@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\Exception;
 use yii\elasticsearch\ActiveRecord;
 
 /**
@@ -16,7 +17,7 @@ use yii\elasticsearch\ActiveRecord;
  * @property CardsCount[] $cardsCounts
  * @property CardsCount[] $cardsCounts0
  */
-class Cards extends ActiveRecord
+class Cards extends \yii\db\ActiveRecord
 {
     /**
      * @return array the list of attributes for this record
@@ -75,5 +76,18 @@ class Cards extends ActiveRecord
     public function getCardsCounts0()
     {
         return $this->hasMany(CardsCount::className(), ['card_id' => 'id']);
+    }
+
+    public function incrementCount(): self
+    {
+        if($this->id) {
+            $cardCount = CardsCount::findOne($this->id);
+            if($cardCount) {
+                $cardCount->card_id = $this->id;
+                $cardCount->count   += 1;
+                if(!$cardCount->save()) new Exception(__METHOD__ . ' cannot increment card count');
+            }
+        }
+        return $this;
     }
 }

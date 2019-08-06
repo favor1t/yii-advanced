@@ -39,6 +39,7 @@ class CardsController extends Controller
      */
     public function actionIndex()
     {
+
         $dataProvider = new ActiveDataProvider([
             'query' => Cards::find(),
         ]);
@@ -57,7 +58,7 @@ class CardsController extends Controller
     public function actionView($id)
     {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $this->findModel($id)->incrementCount(),
         ]);
     }
 
